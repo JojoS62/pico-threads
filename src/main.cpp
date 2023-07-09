@@ -12,6 +12,7 @@ Thread thread;
 Thread thread_events;
 EventQueue queue;
 InterruptIn user_button(p15, PullUp);
+Kernel::Clock::time_point user_button_pressed;
 
 void thread_fn() {
   DigitalOut led(LED1);
@@ -30,6 +31,11 @@ void setup() {
   thread_events.start(callback(&queue, &EventQueue::dispatch_forever));
 
   user_button.rise( []() {
+    if (Kernel::Clock::now() - user_button_pressed < 10ms)
+      return;    
+    
+    user_button_pressed = Kernel::Clock::now(); 
+      
     queue.call(printf, "ping\n");
     queue.call_in(2s, printf, "pong\n");
   });
