@@ -11,7 +11,7 @@ using namespace std;
 Thread thread;
 Thread thread_events;
 EventQueue queue;
-InterruptIn user_button(p15);
+InterruptIn user_button(p15, PullUp);
 
 void thread_fn() {
   DigitalOut led(LED1);
